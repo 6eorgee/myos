@@ -1,17 +1,13 @@
+#include "vga.h"
+
 void main()
 {
-    char* video_memory = (char*)0xb8000;
-    *video_memory++ = 'G';
-    *video_memory++ = 0xC0;
-    *video_memory++ = 'O';
-    *video_memory++ = 0xA0;
-    *video_memory++ = 'G';
-    *video_memory++ = 0x90;
-    *video_memory++ = 'A';
-    *video_memory++ = 0x70;
+    int i = 0;
+    clear_screen();
+    for (i = 0; i < 30; ++i)
+    {
+        char str[] = "   Hello from MyOS\n";
+        str[0] = i + 0x30;
+        print_string(str);
+    }
 }
-
-// void _start()
-// {
-//     main();
-// }
