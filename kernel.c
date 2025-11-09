@@ -1,13 +1,18 @@
 #include "vga.h"
+#include "kbrd.h"
 
 void main()
 {
     int i = 0;
     clear_screen();
-    for (i = 0; i < 30; ++i)
-    {
-        char str[] = "   Hello from MyOS\n";
-        str[0] = i + 0x30;
-        print_string(str);
-    }
+    char str[] = "Hello from MyOS\n\n";
+    print_string(str);
+
+    isr_install();
+
+    print_string("Enabling external interrupts.\n");
+    asm volatile("sti");
+
+    print_string("Initializing keyboard (IRQ 1).\n");
+    init_keyboard();
 }

@@ -7,19 +7,19 @@
 #define MAX_COLS 80
 #define WHITE_ON_BLACK 0x0f
 
-static unsigned char port_byte_in(unsigned short port)
+unsigned char port_byte_in(unsigned short port)
 {
     unsigned char result;
     __asm__("in %%dx, %%al" : "=a"(result) : "d"(port));
     return result;
 }
 
-static void port_byte_out(unsigned short port, unsigned char data)
+void port_byte_out(unsigned short port, unsigned char data)
 {
     __asm__("out %%al, %%dx" : : "a"(data), "d"(port));
 }
 
-static void set_cursor(int offset)
+void set_cursor(int offset)
 {
     offset /= 2;
     port_byte_out(VGA_CTRL_REGISTER, VGA_OFFSET_HIGH);
@@ -28,7 +28,7 @@ static void set_cursor(int offset)
     port_byte_out(VGA_DATA_REGISTER, (unsigned char)(offset & 0xff));
 }
 
-static int get_cursor()
+int get_cursor()
 {
     port_byte_out(VGA_CTRL_REGISTER, VGA_OFFSET_HIGH);
     int offset = port_byte_in(VGA_DATA_REGISTER) << 8;
@@ -37,24 +37,24 @@ static int get_cursor()
     return offset * 2;
 }
 
-static void set_char_at_video_memory(char character, int offset)
+void set_char_at_video_memory(char character, int offset)
 {
     unsigned char* vidmem = (unsigned char*)VIDEO_ADDRESS;
     vidmem[offset] = character;
     vidmem[offset + 1] = WHITE_ON_BLACK;
 }
 
-static int get_row_from_offset(int offset)
+int get_row_from_offset(int offset)
 {
     return offset / (2 * MAX_COLS);
 }
 
-static int get_offset(int col, int row)
+int get_offset(int col, int row)
 {
     return 2 * (row * MAX_COLS + col);
 }
 
-static int move_offset_to_new_line(int offset)
+int move_offset_to_new_line(int offset)
 {
     return get_offset(0, get_row_from_offset(offset) + 1);
 }
@@ -106,6 +106,12 @@ void print_string(char* string)
     }
     set_cursor(offset);
 }
+
+void print_new_line()
+{
+    print_string("\n");
+}
+
 
 void clear_screen()
 {
