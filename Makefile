@@ -25,11 +25,11 @@ interrupt.o: interrupt.asm
 bootsector.bin: bootsector.asm
 	nasm $< -f bin -o $@
 
-os_image.bin: bootsector.bin kernel.bin
+os_image.img: bootsector.bin kernel.bin
 	cat $^ > $@
 
-run: os_image.bin
+run: os_image.img
 	qemu-system-i386 -fda $<
 
 clean:
-	$(RM) *.bin *.o *.dis
+	$(RM) *.bin *.o *.dis *.img

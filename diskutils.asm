@@ -1,13 +1,15 @@
+%include "printreg.asm"
+
 disk_load:
     pusha
     push dx
 
     mov ah, 0x02 ; read mode
     mov al, dh   ; read dh number of sectors
-    mov cl, 0x02 ; start from sector 2
-                 ; (as sector 1 is our boot sector)
     mov ch, 0x00 ; cylinder 0
     mov dh, 0x00 ; head 0
+    mov cl, 0x02 ; start from sector 2
+                 ; (as sector 1 is our boot sector)
 
     ; dl = drive number is set as input to disk_load
     ; es:bx = buffer pointer is set as input as well
@@ -23,10 +25,17 @@ disk_load:
     ret
 
 disk_error:
+    call print_ax
+    mov ah, 0xe
+    mov al, 'D'
+    int 10h
     ; bgn want to print error message here
     jmp disk_loop
 
 sectors_error:
+    mov ah, 0xe
+    mov al, 'S'
+    int 10h
     ; bgn want to print error message here
     jmp disk_loop
 

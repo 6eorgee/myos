@@ -5,6 +5,9 @@
 KERNEL_OFFSET equ 0x1000
 
 ; BIOS sets boot drive in 'dl'; store for later use
+xor ax, ax
+mov ds, ax
+mov es, ax
 mov [BOOT_DRIVE], dl
 
 ; setup stack
