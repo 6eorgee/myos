@@ -1,3 +1,5 @@
+#include "ports.h"
+
 #define VGA_CTRL_REGISTER 0x3d4
 #define VGA_DATA_REGISTER 0x3d5
 #define VGA_OFFSET_LOW 0x0f
@@ -7,20 +9,12 @@
 #define MAX_COLS 80
 #define WHITE_ON_BLACK 0x0f
 
-unsigned char port_byte_in(unsigned short port)
-{
-    unsigned char result;
-    __asm__("in %%dx, %%al" : "=a"(result) : "d"(port));
-    return result;
-}
-
-void port_byte_out(unsigned short port, unsigned char data)
-{
-    __asm__("out %%al, %%dx" : : "a"(data), "d"(port));
-}
-
 void set_cursor(int offset)
 {
+    if (offset < 0)
+    {
+        return;
+    }
     offset /= 2;
     port_byte_out(VGA_CTRL_REGISTER, VGA_OFFSET_HIGH);
     port_byte_out(VGA_DATA_REGISTER, (unsigned char)(offset >> 8));
@@ -68,7 +62,7 @@ void memory_copy(char* source, char* dest, int nbytes)
     }
 }
 
-int scroll_ln(int offset)
+int scroll_line(int offset)
 {
     memory_copy(
         (char*)(get_offset(0, 1) + VIDEO_ADDRESS),
@@ -91,7 +85,7 @@ void print_string(char* string)
     {
         if (offset >= MAX_ROWS * MAX_COLS * 2)
         {
-            offset = scroll_ln(offset);
+            offset = scroll_line(offset);
         }
         if (string[i] == '\n')
         {
@@ -110,8 +104,13 @@ void print_string(char* string)
 void print_new_line()
 {
     print_string("\n");
+    int offset = get_cursor();
+    if (offset >= MAX_ROWS * MAX_COLS * 2)
+    {
+        offset = scroll_line(offset);
+    }
+    set_cursor(offset);
 }
-
 
 void clear_screen()
 {

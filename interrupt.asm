@@ -31,8 +31,6 @@ global isr29
 global isr30
 global isr31
 
-
-
 ; 0: Divide By Zero Exception
 isr0:
     push byte 0
@@ -218,7 +216,6 @@ isr31:
     push byte 0
     push byte 31
     jmp isr_common_stub
-
 
 [extern isr_handler]
 

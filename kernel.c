@@ -11,7 +11,7 @@ void main()
     isr_install();
 
     print_string("Enabling external interrupts.\n");
-    asm volatile("sti");
+    __asm__ volatile("sti");
 
     print_string("Initializing keyboard (IRQ 1).\n");
     init_keyboard();

@@ -29,14 +29,12 @@ disk_error:
     mov ah, 0xe
     mov al, 'D'
     int 10h
-    ; bgn want to print error message here
     jmp disk_loop
 
 sectors_error:
     mov ah, 0xe
     mov al, 'S'
     int 10h
-    ; bgn want to print error message here
     jmp disk_loop
 
 disk_loop:

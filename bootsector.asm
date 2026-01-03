@@ -1,10 +1,8 @@
+KERNEL_OFFSET equ 0x1000
+
 [bits 16]
 [org 0x7c00]
 
-; where to load the kernel to
-KERNEL_OFFSET equ 0x1000
-
-; BIOS sets boot drive in 'dl'; store for later use
 xor ax, ax
 mov ds, ax
 mov es, ax
@@ -16,7 +14,6 @@ mov sp, bp
 
 call load_kernel
 call switch_to_32bit
-
 jmp $
 
 %include "diskutils.asm"
@@ -34,13 +31,8 @@ load_kernel:
 [bits 32]
 BEGIN_32BIT:
     call KERNEL_OFFSET ; give control to the kernel
-    jmp $ ; loop in case kernel returns
+    jmp $              ; loop in case kernel returns
 
-; boot drive variable
 BOOT_DRIVE db 0
-
-; padding
 times 510 - ($-$$) db 0
-
-; magic number
 dw 0xaa55
